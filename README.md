@@ -4,6 +4,7 @@ Continuous integration (CI) is used across the world to build, test, and deploy 
 
 Since I couldn't find any good answers to that question, this repository is an attempt to find out.
 
-## Useful articles
+## Useful links
 
 - [Argos: Measure The Carbon Footprint Of Software, Improve Developer Practices](https://marmelab.com/blog/2020/11/26/argos-sustainable-development.html)
+- [energyusage Python packge](https://pypi.org/project/energyusage/#description)
