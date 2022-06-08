@@ -9,3 +9,4 @@ Since I couldn't find any good answers to that question, this repository is an a
 - [Argos: Measure The Carbon Footprint Of Software, Improve Developer Practices](https://marmelab.com/blog/2020/11/26/argos-sustainable-development.html)
 - [energyusage Python packge](https://pypi.org/project/energyusage/#description)
 - [The Green Algorithms calculator](https://www.green-algorithms.org/)
+- [The Shift Project](https://theshiftproject.org/lean-ict/)
