@@ -112,6 +112,7 @@ class GhApi:
             per_page=100,
         )
         runtimes = []
+        # Fields to save
         keys = ["id", "name", "started_at", "completed_at"]
         i = 1
         for workflows in workflows_paged:
@@ -139,6 +140,18 @@ class GhApi:
                 for job in jobs["jobs"]:
                     data = {key: job[key] for key in keys}
                     data["workflow_id"] = workflow_id
+
+                    # Extract OS from labels
+                    if len(job["labels"]) > 1:
+                        data["os"] = "self-hosted"
+                    elif len(job["labels"]) == 0:
+                        data["os"] = "unknown"
+                    else:
+                        if '-' in job["labels"]:
+                            data["os"] = job["labels"][0].split("-")[0]
+                        else:
+                            data["os"] = "unknown"
+
                     runtimes.append(data)
 
             # Check date of the oldest workflow run in this batch
@@ -181,7 +194,7 @@ def load_cached_job_info(*, org: str, repo: str) -> pd.DataFrame:
     df = pd.read_csv(
         job_cache_file,
         index_col="id",
-        parse_dates=["started_at", "completed_at", "running_time"],
+        parse_dates=["started_at", "completed_at"],
     )
     # Only include completed jobs
     df = df[np.isfinite(df["completed_at"])]
