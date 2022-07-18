@@ -27,6 +27,9 @@ class GhApi:
         """
         self.api = ghapi.all.GhApi(token=token)
 
+    def get_rate_limit(self) -> int:
+        return int(self.api.limit_rem)
+
     def get_all_repo_names(
         self, *, org: str, include_private: bool = False
     ) -> List[str]:
@@ -147,7 +150,7 @@ class GhApi:
                     elif len(job["labels"]) == 0:
                         data["os"] = "unknown"
                     else:
-                        if '-' in job["labels"]:
+                        if "-" in job["labels"]:
                             data["os"] = job["labels"][0].split("-")[0]
                         else:
                             data["os"] = "unknown"
