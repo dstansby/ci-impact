@@ -27,7 +27,7 @@ class GhApi:
         """
         self.api = ghapi.all.GhApi(token=token)
 
-    def get_all_repo_names(self, *, org: str, include_private=False) -> List[str]:
+    def get_all_repo_names(self, *, org: str, include_private: bool=False) -> List[str]:
         """
         Get all repository names for a given organisation.
 
