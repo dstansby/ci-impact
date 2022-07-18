@@ -118,9 +118,6 @@ class GhApi:
             for workflow_run in workflows["workflow_runs"]:
                 workflow_id = workflow_run["id"]
                 if workflow_id in workflow_ids:
-                    print(
-                        f"💾 Getting cached jobs for workflow #{workflow_id} from {org}/{repo}"
-                    )
                     # Job already saved
                     continue
 
