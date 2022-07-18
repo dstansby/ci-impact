@@ -2,13 +2,24 @@ import warnings
 from pathlib import Path
 from typing import List, Optional
 
+import ghapi.all
 import pandas as pd
-from ghapi.all import GhApi, paged
+import numpy as np
 
 
-class CustomGhAPI:
+class GhApi:
+    """
+    A GitHub API class that extends `ghapi.all.GhApi`.
+    """
+
     def __init__(self, token: str) -> None:
-        self.api = GhApi(token=token)
+        """
+        Parameters
+        ----------
+        token : str
+            GitHub API token.
+        """
+        self.api = ghapi.all.GhApi(token=token)
 
         self.cache_dir = Path(__file__).parent / ".cache"
         self.cache_dir.mkdir(exist_ok=True)
@@ -22,12 +33,17 @@ class CustomGhAPI:
         org : str
             Orgainisation name.
         include_private : bool, optional
-            Whether to include private repositories that can be accessed by the
-            currently authenticated user or not.
+            If `True`, include private repositories that can be accessed by the
+            currently authenticated user.
+
+        Returns
+        -------
+        names : list[str]
+            List of repository names.
         """
         repos = []
         i = 1
-        repos = paged(self.api.repos.list_for_org, org=org, per_page=100)
+        repos = ghapi.all.paged(self.api.repos.list_for_org, org=org, per_page=100)
         for page in repos:
             print(f"Getting page {i} of repositories for {org}")
             repos += page
@@ -41,7 +57,7 @@ class CustomGhAPI:
 
     def get_job_runtimes(self, *, org: str, repo: str) -> Optional[pd.DataFrame]:
         """
-        Get a list of jobs with starttimes, endtimes, and total runtimes
+        Get a list of completed jobs with starttimes, endtimes, and total runtimes
         from a given GitHub respository.
 
         Parameters
@@ -54,7 +70,7 @@ class CustomGhAPI:
         Returns
         -------
         None, pd.DataFrame
-            None if there are no jobs for this repository.
+            `None` if there are no jobs for this repository.
             Otherwise a DataFrame with job ID as the index, and the following
             columns:
              - job name
@@ -67,7 +83,7 @@ class CustomGhAPI:
         This currently only queries the last 100 workflow runs in a given
         repository.
         """
-        job_cache_file = self.cache_dir / "jobs.csv"
+        job_cache_file = self.cache_dir / f"{org}_{repo}_jobs.csv"
         if job_cache_file.exists():
             new_df = pd.read_csv(
                 job_cache_file,
@@ -89,7 +105,9 @@ class CustomGhAPI:
         for workflow_run in workflows["workflow_runs"]:
             workflow_id = workflow_run["id"]
             if workflow_id in workflow_ids:
+                # Job already saved
                 continue
+
             print(f"Getting workflow #{workflow_id} jobs from {org}/{repo}")
             jobs = self.api.actions.list_jobs_for_workflow_run(
                 owner=org,
@@ -104,13 +122,22 @@ class CustomGhAPI:
                 data["workflow_id"] = workflow_id
                 runtimes.append(data)
 
-        df = pd.DataFrame(runtimes)
-        df = df.set_index("id")
-        df["completed_at"] = pd.to_datetime(df["completed_at"])
-        df["started_at"] = pd.to_datetime(df["started_at"])
-        df["running_time"] = df["completed_at"] - df["started_at"]
-        if job_cache_file.exists():
-            df = pd.concat([df, new_df])
+        if len(runtimes):
+            df = pd.DataFrame(runtimes)
+            df = df.set_index("id")
+            df["completed_at"] = pd.to_datetime(df["completed_at"])
+            df["started_at"] = pd.to_datetime(df["started_at"])
+            df = df[np.isfinite(df["completed_at"])]
+            df["running_time"] = pd.to_timedelta(df["completed_at"] - df["started_at"])
+            if job_cache_file.exists():
+                df = pd.concat([df, new_df])
+        else:
+            df = new_df
 
         df.to_csv(job_cache_file)
+        # Only include completed jobs
+        df = df[np.isfinite(df['completed_at'])]
+        df['running_time'] = pd.to_timedelta(df['running_time'])
+        df = df.sort_values('started_at')
+
         return df
