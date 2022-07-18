@@ -1,4 +1,5 @@
 import warnings
+from datetime import date, datetime
 from pathlib import Path
 from typing import List, Optional
 
@@ -57,7 +58,9 @@ class GhApi:
             repo_names = [repo.name for repo in repos if not repo.private]
         return repo_names
 
-    def get_job_runtimes(self, *, org: str, repo: str) -> Optional[pd.DataFrame]:
+    def get_job_runtimes(
+        self, *, org: str, repo: str, start_date: date
+    ) -> Optional[pd.DataFrame]:
         """
         Get a list of completed jobs with starttimes, endtimes, and total runtimes
         from a given GitHub respository.
@@ -68,6 +71,10 @@ class GhApi:
             Organisation name.
         repo : str
             Repository name.
+        start_date : datetime.date
+            Date from which to get jobs from. Jobs are fetched form this date to
+            the present day. Because workflows are fetched in batches of 100,
+            some jobs before this date may be present.
 
         Returns
         -------
@@ -96,36 +103,51 @@ class GhApi:
         else:
             workflow_ids = set()
 
-        workflows = self.api.actions.list_workflow_runs_for_repo(
-            owner=org, repo=repo, per_page=10
+        workflows_paged = ghapi.all.paged(
+            self.api.actions.list_workflow_runs_for_repo,
+            owner=org,
+            repo=repo,
+            per_page=100,
         )
-        if workflows.total_count == 0:
-            return None
-
         runtimes = []
         keys = ["id", "name", "started_at", "completed_at"]
-        for workflow_run in workflows["workflow_runs"]:
-            workflow_id = workflow_run["id"]
-            if workflow_id in workflow_ids:
-                print(
-                    f"💾 Getting cached jobs for workflow #{workflow_id} from {org}/{repo}"
-                )
-                # Job already saved
-                continue
+        i = 1
+        for workflows in workflows_paged:
+            print(f"🗄 Downloading page {i} of workflows")
+            i += 1
+            for workflow_run in workflows["workflow_runs"]:
+                workflow_id = workflow_run["id"]
+                if workflow_id in workflow_ids:
+                    print(
+                        f"💾 Getting cached jobs for workflow #{workflow_id} from {org}/{repo}"
+                    )
+                    # Job already saved
+                    continue
 
-            print(f"🌎 Downloading jobs for workflow #{workflow_id} from {org}/{repo}")
-            jobs = self.api.actions.list_jobs_for_workflow_run(
-                owner=org,
-                repo=repo,
-                run_id=workflow_id,
-                per_page=100,
+                print(
+                    f"🌎 Downloading jobs for workflow #{workflow_id} from {org}/{repo}"
+                )
+                jobs = self.api.actions.list_jobs_for_workflow_run(
+                    owner=org,
+                    repo=repo,
+                    run_id=workflow_id,
+                    per_page=100,
+                )
+                if jobs["total_count"] > 100:
+                    warnings.warn(
+                        "More than 100 jobs in workflow, only saving the first 100"
+                    )
+                for job in jobs["jobs"]:
+                    data = {key: job[key] for key in keys}
+                    data["workflow_id"] = workflow_id
+                    runtimes.append(data)
+
+            # Check date of the oldest workflow run in this batch
+            run_start = datetime.strptime(
+                workflow_run["run_started_at"], "%Y-%m-%dT%H:%M:%SZ"
             )
-            if jobs["total_count"] > 100:
-                warnings.warn("More than 100 jobs, only saving the first 100")
-            for job in jobs["jobs"]:
-                data = {key: job[key] for key in keys}
-                data["workflow_id"] = workflow_id
-                runtimes.append(data)
+            if run_start.date() < start_date:
+                break
 
         if len(runtimes):
             df = pd.DataFrame(runtimes)
