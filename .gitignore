@@ -4,4 +4,4 @@ gh/data
 .cache
 *.pyc
 *.ipynb
-*.csv
+ci_impact/.cache
