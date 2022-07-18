@@ -1,0 +1,4 @@
+os,cpu,n_cores
+linux,Intel Xeon Platinum 8370C,2
+macos,Intel Xeon E5-1650,3
+windows,Intel(R) Xeon(R) CPU E5-2673 v3,2
