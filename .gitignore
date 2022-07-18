@@ -1,3 +1,7 @@
 *.ipynb_checkpoints
 *.DS_Store
 gh/data
+.cache
+*.pyc
+*.ipynb
+*.csv
