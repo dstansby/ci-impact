@@ -1,1 +1,1 @@
-from .gh import GhApi
+from .gh import *
