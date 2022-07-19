@@ -3,12 +3,10 @@ sunpy CI jobs
 =============
 """
 import os
-from datetime import date
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import pint
 
 from ci_impact.emissions import power_usage
