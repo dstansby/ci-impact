@@ -120,8 +120,11 @@ class GhApi:
         keys = ["id", "name", "started_at", "completed_at"]
         i = 1
         for workflows in workflows_paged:
-            print(f"🗄 Downloading page {i} of workflows")
+            print(f"🗄  Downloading page {i} of workflows for {org}/{repo}")
             i += 1
+            if workflows.total_count == 0:
+                return None
+
             for workflow_run in workflows["workflow_runs"]:
                 workflow_id = workflow_run["id"]
                 if workflow_id in workflow_ids:
