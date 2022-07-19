@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Iterable, Optional, Tuple, Union
 
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 import pint
 from pint.quantity import Quantity
@@ -10,11 +11,17 @@ from pint.quantity import Quantity
 u = pint.UnitRegistry()
 DATA_DIR = Path(__file__).parent / "data"
 
-iter_int = Union[int, np.ndarray]
+# Typing
 iter_str = Union[str, np.ndarray]
 
+# Constants
+CARBON_INTENSITY = 357.32 * u.g / (u.kW * u.hour)
+TREE_ABSORBTION = 11000 * u.g / u.year
 
-def get_cpu_draw(model: iter_str, *, n_cores: Optional[iter_int] = None) -> Quantity:
+
+def get_cpu_draw(
+    model: npt.ArrayLike, *, n_cores: Optional[npt.ArrayLike] = None
+) -> Quantity:
     """
     Get total CPU draw in watts.
 
@@ -60,3 +67,12 @@ def power_usage(os: str, runtime: timedelta) -> Quantity:
     return (runtime * (cpu_draw * usage + memory_draw) * power_usage_effectiveness).to(
         u.kW * u.hour
     )
+
+
+def emissions(os: str, runtime: timedelta) -> Quantity:
+    """
+    Get CO2 emissions for running a GH Actions job on a given OS for a given
+    amount of time.
+    """
+    power = power_usage(os, runtime)
+    return (power * CARBON_INTENSITY).to(u.g)
