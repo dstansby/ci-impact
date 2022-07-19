@@ -99,13 +99,14 @@ class GhApi:
         """
         job_cache_file = get_job_cache_file(repo=repo, org=org)
         if job_cache_file.exists():
-            new_df = pd.read_csv(
+            cached_df = pd.read_csv(
                 job_cache_file,
                 index_col="id",
                 parse_dates=["started_at", "completed_at"],
             )
-            workflow_ids = set(new_df["workflow_id"])
+            workflow_ids = set(cached_df["workflow_id"])
         else:
+            cached_df = None
             workflow_ids = set()
 
         workflows_paged = ghapi.all.paged(
@@ -164,18 +165,17 @@ class GhApi:
             if run_start.date() < start_date:
                 break
 
-        if len(runtimes):
-            df = pd.DataFrame(runtimes)
-            df = df.set_index("id")
-            df["completed_at"] = pd.to_datetime(df["completed_at"])
-            df["started_at"] = pd.to_datetime(df["started_at"])
-            df = df[np.isfinite(df["completed_at"])]
-            if job_cache_file.exists():
-                df = pd.concat([df, new_df])
-        else:
-            df = new_df
-
-        df.to_csv(job_cache_file)
+            # Save
+            if len(runtimes):
+                df = pd.DataFrame(runtimes)
+                df = df.set_index("id")
+                df["completed_at"] = pd.to_datetime(df["completed_at"])
+                df["started_at"] = pd.to_datetime(df["started_at"])
+                df = df[np.isfinite(df["completed_at"])]
+                if cached_df is not None:
+                    df = pd.concat([df, cached_df])
+                df = df.sort_values("started_at")
+                df.to_csv(job_cache_file)
         return load_cached_job_info(org=org, repo=repo)
 
 
