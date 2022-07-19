@@ -3,4 +3,4 @@ model,TDP,n_cores,source
 Intel Xeon Platinum 8370C,270,32,https://gadgetversus.com/processor/intel-xeon-platinum-8370c-specs/
 Intel Xeon E5-1650 v2,130,6,https://ark.intel.com/content/www/us/en/ark/products/75780/intel-xeon-processor-e51650-v2-12m-cache-3-50-ghz.html
 Intel Xeon E5-2673 v3,110,8,https://www.intel.com/content/www/us/en/products/sku/79930/intel-xeon-processor-e52673-v2-25m-cache-3-30-ghz/specifications.html
-unknown,0,1,
+unknown,8.5,1,
