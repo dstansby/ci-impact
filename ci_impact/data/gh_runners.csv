@@ -2,4 +2,4 @@ os,cpu,n_cores,memory
 ubuntu,Intel Xeon Platinum 8370C,2,8
 macos,Intel Xeon E5-1650 v2,3,16
 windows,Intel Xeon E5-2673 v3,2,8
-unknown,unknown,1,8
+unknown,unknown,2,8
