@@ -151,19 +151,14 @@ class GhApi:
                     elif len(job["labels"]) == 0:
                         data["os"] = "unknown"
                     else:
-                        if "-" in job["labels"]:
-                            data["os"] = job["labels"][0].split("-")[0]
+                        label = job["labels"][0]
+                        if "-" in label:
+                            data["os"] = label.split("-")[0]
                         else:
                             data["os"] = "unknown"
 
+                    data["workflow_run"] = workflow_run["name"]
                     runtimes.append(data)
-
-            # Check date of the oldest workflow run in this batch
-            run_start = datetime.strptime(
-                workflow_run["run_started_at"], "%Y-%m-%dT%H:%M:%SZ"
-            )
-            if run_start.date() < start_date:
-                break
 
             # Save
             if len(runtimes):
@@ -176,6 +171,14 @@ class GhApi:
                     df = pd.concat([df, cached_df])
                 df = df.sort_values("started_at")
                 df.to_csv(job_cache_file)
+
+            # Check date of the oldest workflow run in this batch
+            run_start = datetime.strptime(
+                workflow_run["run_started_at"], "%Y-%m-%dT%H:%M:%SZ"
+            )
+            if run_start.date() < start_date:
+                break
+
         return load_cached_job_info(org=org, repo=repo)
 
 
