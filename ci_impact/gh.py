@@ -151,16 +151,11 @@ class GhApi:
                     data["workflow_id"] = workflow_id
 
                     # Extract OS from labels
-                    if len(job["labels"]) > 1:
-                        data["os"] = "self-hosted"
-                    elif len(job["labels"]) == 0:
-                        data["os"] = "unknown"
+                    if "labels" not in job:
+                        warnings.warn("No labels in job info")
+                        data["os"] = "unkown"
                     else:
-                        label = job["labels"][0]
-                        if "-" in label:
-                            data["os"] = label.split("-")[0]
-                        else:
-                            data["os"] = "unknown"
+                        data["os"] = self._os_from_labels(job["labels"])
 
                     data["workflow_run"] = workflow_run["name"]
                     runtimes.append(data)
@@ -185,6 +180,22 @@ class GhApi:
                 break
 
         return load_cached_job_info(org=org, repo=repo)
+
+    @staticmethod
+    def _os_from_labels(labels: List[str]) -> str:
+        """
+        Get operating system from a list of GH actions labels.
+        """
+        if len(labels) > 1:
+            return "self-hosted"
+        elif len(labels) == 0:
+            return "unknown"
+        else:
+            label = labels[0]
+            if "-" in label:
+                return label.split("-")[0]
+            else:
+                return "unknown"
 
 
 def get_job_cache_file(*, org: str, repo: str) -> Path:
