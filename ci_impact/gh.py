@@ -51,7 +51,9 @@ class GhApi:
         """
         repos = []
         i = 1
-        repos_paged = ghapi.all.paged(self.api.repos.list_for_org, org=org, per_page=100)
+        repos_paged = ghapi.all.paged(
+            self.api.repos.list_for_org, org=org, per_page=100
+        )
         for page in repos_paged:
             print(f"Getting page {i} of repositories for {org}")
             repos += page
