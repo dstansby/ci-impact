@@ -29,7 +29,7 @@ if query_gh:
     # Get job info from GH REST API
     for orgrepo in orgrepos:
         org, repo = orgrepo.split("/")
-        if org.lower() != 'ucl-rits':
+        if org.lower() != "ucl-rits":
             continue
         api.get_job_runtimes(org=org, repo=repo, start_date=date(2022, 1, 1))
 
