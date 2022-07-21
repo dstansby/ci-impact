@@ -469,3 +469,4 @@ UCL-RITS/PHAS0100_Optimisation
 UCL-RITS/PHAS0100_Profiling
 astro-informatics/sopt
 astro-informatics/purify
+ukri-excalibur/excalibur-tests
