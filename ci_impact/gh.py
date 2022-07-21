@@ -153,7 +153,7 @@ class GhApi:
                     # Extract OS from labels
                     if "labels" not in job:
                         warnings.warn("No labels in job info")
-                        data["os"] = "unkown"
+                        data["os"] = "unknown"
                     else:
                         data["os"] = self._os_from_labels(job["labels"])
 
