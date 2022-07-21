@@ -69,7 +69,9 @@ ax.plot(ci_info["started_at"], np.cumsum(ci_info["emissions"]))
 
 ax.set_ylabel("kgeCO2")
 ax.set_ylim(0)
-ax.set_title(f"Estimated CO2 emissions from\n{len(ci_info)} GitHub action runs\non ARC related projects")
+ax.set_title(
+    f"Estimated CO2 emissions from\n{len(ci_info)} GitHub action runs\non ARC related projects"
+)
 
 locator = mdates.AutoDateLocator()
 formatter = mdates.ConciseDateFormatter(locator)
