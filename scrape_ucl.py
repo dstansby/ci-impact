@@ -1,14 +1,14 @@
 """
 Get UCL repositories
 ====================
-This script is for getting a list of all GitHub repositories
-in the UCL organisation or that RSDG has worked on.
+Get a list of all GitHub repositories in the UCL related
+organisations.
 """
 import os
 
 from ci_impact.gh import GhApi
 
-orgs = ["brainglobe", "ucl", "UCL-RITS"]
+orgs = ["UCL", "UCL-RITS", "UCL-MIRSG", "UCL-ARC"]
 repo_file = "ucl_repos.txt"
 
 with open(repo_file, "r") as f:
