@@ -467,3 +467,5 @@ UCL-RITS/PHAS0100_Sorting
 UCL-RITS/PHAS0100_Caching
 UCL-RITS/PHAS0100_Optimisation
 UCL-RITS/PHAS0100_Profiling
+astro-informatics/sopt
+astro-informatics/purify
