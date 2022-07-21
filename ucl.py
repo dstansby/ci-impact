@@ -62,14 +62,14 @@ repo_emissions = repo_emissions.iloc[-10:]
 
 ##################################################
 # Plot graphs
-fig, axs = plt.subplots(nrows=2, constrained_layout=True)
+fig, axs = plt.subplots(nrows=2, constrained_layout=True, figsize=(4, 6))
 
 ax = axs[0]
 ax.plot(ci_info["started_at"], np.cumsum(ci_info["emissions"]))
 
 ax.set_ylabel("kgeCO2")
 ax.set_ylim(0)
-ax.set_title("Estimated CO2 emissions from\nGitHub action runs on UCL related projects")
+ax.set_title(f"Estimated CO2 emissions from\n{len(ci_info)} GitHub action runs\non ARC related projects")
 
 locator = mdates.AutoDateLocator()
 formatter = mdates.ConciseDateFormatter(locator)
