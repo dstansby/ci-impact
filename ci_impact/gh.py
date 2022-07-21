@@ -124,8 +124,8 @@ class GhApi:
         for workflows in workflows_paged:
             print(f"🗄  Downloading page {i} of workflows for {org}/{repo}")
             i += 1
-            if workflows.total_count == 0:
-                return None
+            if len(workflows["workflow_runs"]) == 0:
+                break
 
             for workflow_run in workflows["workflow_runs"]:
                 workflow_id = workflow_run["id"]
@@ -179,6 +179,8 @@ class GhApi:
             if run_start.date() < start_date:
                 break
 
+        if not len(runtimes):
+            return None
         return load_cached_job_info(org=org, repo=repo)
 
     @staticmethod
