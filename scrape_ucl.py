@@ -8,7 +8,7 @@ import os
 
 from ci_impact.gh import GhApi
 
-orgs = ["UCL", "UCL-RITS", "UCL-MIRSG", "UCL-ARC"]
+orgs = sorted(["UCL", "UCL-RITS", "UCL-MIRSG", "UCL-ARC"])
 repo_file = "ucl_repos.txt"
 
 with open(repo_file, "r") as f:
@@ -28,4 +28,5 @@ for org in orgs:
         for repo in repos:
             orgrepo = f"{org}/{repo}"
             if orgrepo not in existing_repos:
+                print(f"🐢 Adding new repo: {orgrepo}")
                 f.write(f"{org}/{repo}\n")
