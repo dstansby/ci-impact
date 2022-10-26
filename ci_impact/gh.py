@@ -173,11 +173,14 @@ class GhApi:
                 df.to_csv(job_cache_file)
 
             # Check date of the oldest workflow run in this batch
-            run_start = datetime.strptime(
-                workflow_run["run_started_at"], "%Y-%m-%dT%H:%M:%SZ"
-            )
-            if run_start.date() < start_date:
-                break
+            if workflow_run["run_started_at"] is not None:
+                run_start = datetime.strptime(
+                    workflow_run["run_started_at"], "%Y-%m-%dT%H:%M:%SZ"
+                )
+                if run_start.date() < start_date:
+                    break
+            else:
+                warnings.warn("Run start time is None")
 
         if not len(runtimes):
             return None
