@@ -226,4 +226,5 @@ def load_cached_job_info(*, org: str, repo: str) -> pd.DataFrame:
     df["running_time"] = pd.to_timedelta(df["completed_at"] - df["started_at"])
     # Sort by start time
     df = df.sort_values("started_at")
+    df["repo"] = repo
     return df
