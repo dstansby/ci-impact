@@ -1,6 +1,6 @@
 """
-sunpy CI jobs
-=============
+Get UCL related emissions
+=========================
 """
 import os
 from datetime import date
@@ -29,8 +29,8 @@ if query_gh:
     # Get job info from GH REST API
     for orgrepo in orgrepos:
         org, repo = orgrepo.split("/")
-        if org.lower() != "ucl-rits":
-            continue
+        # if org.lower() != 'UCL-ARC'.lower():
+        #   continue
         api.get_job_runtimes(org=org, repo=repo, start_date=date(2022, 1, 1))
 
 # Load job info from saved files
@@ -70,7 +70,7 @@ ax.plot(ci_info["started_at"], np.cumsum(ci_info["emissions"]))
 ax.set_ylabel("kgeCO2")
 ax.set_ylim(0)
 ax.set_title(
-    f"Estimated CO2 emissions from\n{len(ci_info)} GitHub action runs\non ARC related projects"
+    f"Estimated CO2 emissions from\n{len(ci_info)} GitHub action runs\non UCL related projects"
 )
 
 locator = mdates.AutoDateLocator()
