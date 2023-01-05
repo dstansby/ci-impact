@@ -6,7 +6,7 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 import pint
-from pint.quantity import Quantity
+from pint import Quantity
 
 u = pint.UnitRegistry()
 DATA_DIR = Path(__file__).parent / "data"
