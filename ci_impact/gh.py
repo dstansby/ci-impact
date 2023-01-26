@@ -133,8 +133,9 @@ class GhApi:
                     # Job already saved
                     continue
 
+                run_started = workflow_run["run_started_at"]
                 print(
-                    f"🌎 Downloading jobs for workflow #{workflow_id} from {org}/{repo}"
+                    f"🌎 Downloading jobs for workflow #{workflow_id} from {org}/{repo} ({run_started})"
                 )
                 jobs = self.api.actions.list_jobs_for_workflow_run(
                     owner=org,
