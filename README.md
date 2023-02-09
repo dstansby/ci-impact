@@ -4,15 +4,11 @@ Continuous integration (CI) is used across the world to build, test, and deploy 
 
 Since I couldn't find any good answers to that question, this repository is an attempt to find out.
 
-## Useful links
+## Methodology
+The general idea is to scrape the GitHub API for the durations and operating systems of GitHub Actions jobs.
+From this information, we can guesstimate the the power consumed and associated emissions using the assumptions below.
 
-- [Argos: Measure The Carbon Footprint Of Software, Improve Developer Practices](https://marmelab.com/blog/2020/11/26/argos-sustainable-development.html)
-- [energyusage Python packge](https://pypi.org/project/energyusage/#description)
-- [The Green Algorithms calculator](https://www.green-algorithms.org/)
-- [The Shift Project](https://theshiftproject.org/lean-ict/)
-
-
-## Carbon emission assumptions
+### Carbon emission assumptions
 Data is taken from [v2.1 of the Green Algorithms datasets](https://github.com/GreenAlgorithms/green-algorithms-tool/tree/master/data/v2.1).
 
 - All cores are being utilised 100% throughout runs.
@@ -23,3 +19,12 @@ Data is taken from [v2.1 of the Green Algorithms datasets](https://github.com/Gr
     - West US 2 (westus2) in US-WA (95.34 gCO2e/kWh)
     - Central US (centralus) in US-IA (513.78 gCO2e/kWh)
     - South Central US (southcentralus) in US-TX (468.98 gCO2e/kWh)
+
+## Results
+
+## Useful links
+
+- [Argos: Measure The Carbon Footprint Of Software, Improve Developer Practices](https://marmelab.com/blog/2020/11/26/argos-sustainable-development.html)
+- [energyusage Python packge](https://pypi.org/project/energyusage/#description)
+- [The Green Algorithms calculator](https://www.green-algorithms.org/)
+- [The Shift Project](https://theshiftproject.org/lean-ict/)
