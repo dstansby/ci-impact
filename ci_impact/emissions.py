@@ -41,7 +41,7 @@ def get_cpu_draw(
 
 def get_runner_info(os: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-    For a given GH actions runner, return the
+    For a given GH actions operating system, return the
     - cpu model
     - number of cores
     - amount of RAM
@@ -55,6 +55,10 @@ def get_runner_info(os: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
 
 
 def power_usage(os: str, runtime: timedelta) -> Quantity:
+    """
+    For a given GH actions operating system and runtime, return
+    the estimated total power usage.
+    """
     runtime = runtime * u.hours / np.timedelta64(1, "h")
     model, n_cores, memory = get_runner_info(os)
     cpu_draw = get_cpu_draw(model, n_cores=n_cores)
