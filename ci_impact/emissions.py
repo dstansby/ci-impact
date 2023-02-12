@@ -11,9 +11,6 @@ from pint import Quantity
 u = pint.UnitRegistry()
 DATA_DIR = Path(__file__).parent / "data"
 
-# Typing
-iter_str = Union[str, np.ndarray]
-
 # Constants
 CARBON_INTENSITY = 357.32 * u.g / (u.kW * u.hour)
 TREE_ABSORBTION = 11000 * u.g / u.year
