@@ -1,6 +1,6 @@
 from datetime import timedelta
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple
 
 import numpy as np
 import numpy.typing as npt
