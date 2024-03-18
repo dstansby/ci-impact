@@ -2,6 +2,7 @@
 sunpy CI jobs
 =============
 """
+
 import os
 from datetime import date
 

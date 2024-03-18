@@ -4,6 +4,7 @@ Get UCL repositories
 Get a list of all GitHub repositories in the UCL related
 organisations.
 """
+
 import os
 
 from ci_impact.gh import GhApi
